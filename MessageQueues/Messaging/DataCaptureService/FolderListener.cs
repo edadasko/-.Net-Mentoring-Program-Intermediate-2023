@@ -1,9 +1,7 @@
-﻿using Messaging.Core;
-using Messaging.Core.Interfaces;
+﻿using Messaging.Common.Models;
+using Messaging.Common.Serializators;
 using Messaging.DataCaptureService.Interfaces;
-using Messaging.Models;
-using Messaging.Serialization;
-using Messaging.Serialization.Interfaces;
+using Messaging.Producers;
 
 namespace Messaging.DataCaptureService
 {

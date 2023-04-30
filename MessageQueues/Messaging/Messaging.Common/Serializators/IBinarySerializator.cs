@@ -1,4 +1,4 @@
-﻿namespace Messaging.Serialization.Interfaces
+﻿namespace Messaging.Common.Serializators
 {
     public interface IBinarySerializator<T>
     {

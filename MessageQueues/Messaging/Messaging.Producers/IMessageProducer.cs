@@ -1,4 +1,4 @@
-﻿namespace Messaging.Core.Interfaces
+﻿namespace Messaging.Producers
 {
     public interface IMessageProducer
     {

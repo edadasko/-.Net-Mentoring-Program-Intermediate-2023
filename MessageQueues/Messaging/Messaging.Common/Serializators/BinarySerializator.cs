@@ -1,7 +1,6 @@
-﻿using Messaging.Serialization.Interfaces;
-using System.Runtime.Serialization.Formatters.Binary;
+﻿using System.Runtime.Serialization.Formatters.Binary;
 
-namespace Messaging.Serialization
+namespace Messaging.Common.Serializators
 {
     public class BinarySerializator<T> : IBinarySerializator<T>
     {

@@ -3,20 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messaging.DataCaptureService", "Messaging.DataCaptureService\Messaging.DataCaptureService.csproj", "{CF304750-6480-46D8-81DE-31F340DC652F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataCaptureService", "DataCaptureService\DataCaptureService.csproj", "{CF304750-6480-46D8-81DE-31F340DC652F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4AB3C570-9084-4FEC-802A-65CF4864A46D}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messaging.ProcessingService", "Messaging.ProcessingService\Messaging.ProcessingService.csproj", "{A7665ED5-84AC-4609-B7E5-412323F09E17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProcessingService", "ProcessingService\ProcessingService.csproj", "{A7665ED5-84AC-4609-B7E5-412323F09E17}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messaging.Serialization", "Messaging.Serialization\Messaging.Serialization.csproj", "{B3544F40-A75A-4F47-874B-275937EA5857}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messaging.Producers", "Messaging.Producers\Messaging.Producers.csproj", "{D7816261-A01E-4CBC-A397-1C479F504E2F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messaging.Core", "Messaging.Core\Messaging.Core.csproj", "{D7816261-A01E-4CBC-A397-1C479F504E2F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messaging.Common", "Messaging.Common\Messaging.Common.csproj", "{C5E853D5-C78C-4663-87AD-04770D516E23}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Models", "Messaging.Models\Messaging.Models.csproj", "{C5E853D5-C78C-4663-87AD-04770D516E23}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Consumers", "Messaging.Consumers\Messaging.Consumers.csproj", "{0A2A66BB-3C82-4E31-87C6-BD468CBF75C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,10 +32,6 @@ Global
 		{A7665ED5-84AC-4609-B7E5-412323F09E17}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7665ED5-84AC-4609-B7E5-412323F09E17}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7665ED5-84AC-4609-B7E5-412323F09E17}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B3544F40-A75A-4F47-874B-275937EA5857}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B3544F40-A75A-4F47-874B-275937EA5857}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B3544F40-A75A-4F47-874B-275937EA5857}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B3544F40-A75A-4F47-874B-275937EA5857}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D7816261-A01E-4CBC-A397-1C479F504E2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D7816261-A01E-4CBC-A397-1C479F504E2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7816261-A01E-4CBC-A397-1C479F504E2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -44,6 +40,10 @@ Global
 		{C5E853D5-C78C-4663-87AD-04770D516E23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5E853D5-C78C-4663-87AD-04770D516E23}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5E853D5-C78C-4663-87AD-04770D516E23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A2A66BB-3C82-4E31-87C6-BD468CBF75C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A2A66BB-3C82-4E31-87C6-BD468CBF75C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A2A66BB-3C82-4E31-87C6-BD468CBF75C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A2A66BB-3C82-4E31-87C6-BD468CBF75C5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

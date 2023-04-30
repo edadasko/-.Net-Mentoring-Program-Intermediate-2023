@@ -1,4 +1,4 @@
-﻿namespace Messaging.Models
+﻿namespace Messaging.Common.Models
 {
     [Serializable]
     public class FileMessage

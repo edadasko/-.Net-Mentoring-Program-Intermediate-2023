@@ -1,7 +1,6 @@
-﻿using Messaging.Serialization.Interfaces;
-using System.Text.Json;
+﻿using System.Text.Json;
 
-namespace Messaging.Serialization
+namespace Messaging.Common.Serializators
 {
     public class JsonBinarySerializator<T> : IBinarySerializator<T>
     {

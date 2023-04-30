@@ -1,6 +1,4 @@
 ﻿using Messaging.DataCaptureService.Interfaces;
-using Messaging.Models;
-using Messaging.Serialization;
 
 namespace Messaging.DataCaptureService
 {

@@ -1,7 +1,6 @@
-﻿using Messaging.Models;
+﻿using Messaging.Common.Models;
+using Messaging.Common.Serializators;
 using Messaging.ProcessingService.Interfaces;
-using Messaging.Serialization;
-using Messaging.Serialization.Interfaces;
 
 namespace Messaging.ProcessingService
 {

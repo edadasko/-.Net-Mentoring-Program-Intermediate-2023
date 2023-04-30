@@ -1,4 +1,4 @@
-﻿namespace Messaging.Core.Interfaces
+﻿namespace Messaging.Consumers
 {
     public interface IMessageConsumer
     {

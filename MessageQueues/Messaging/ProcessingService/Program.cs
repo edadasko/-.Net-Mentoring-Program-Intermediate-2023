@@ -1,5 +1,4 @@
-﻿using Messaging.Core;
-using Messaging.Core.Interfaces;
+﻿using Messaging.Consumers;
 using Messaging.ProcessingService.Interfaces;
 
 namespace Messaging.ProcessingService

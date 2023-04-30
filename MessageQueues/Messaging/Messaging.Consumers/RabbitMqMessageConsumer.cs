@@ -1,8 +1,7 @@
-﻿using Messaging.Core.Interfaces;
-using RabbitMQ.Client;
+﻿using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace Messaging.Core
+namespace Messaging.Consumers
 {
     public class RabbitMqMessageConsumer : IMessageConsumer, IDisposable
     {

@@ -1,4 +1,4 @@
-﻿using Messaging.Models;
+﻿using Messaging.Common.Models;
 
 namespace Messaging.ProcessingService.Interfaces
 {
