@@ -46,29 +46,23 @@ namespace Messaging.ProcessingService
                 var processedFileName = $"{Guid.NewGuid()}.{Path.GetExtension(fileMessage.Name)}";
                 _files[fileMessage.Name] = new ResultFile()
                 {
-                    LastProcessedPart = fileMessage.PartNum,
                     FileStream = File.Create(Path.Combine(_saveFolder, processedFileName)),
                     SemaphoreSlim = new SemaphoreSlim(1),
                 };
-
-                _files[fileMessage.Name].SemaphoreSlim.Wait();
-                await _files[fileMessage.Name].FileStream.WriteAsync(fileMessage.Data);
-                _files[fileMessage.Name].SemaphoreSlim.Release();
             }
-            else
-            {
-                _files[fileMessage.Name].SemaphoreSlim.Wait();
 
-                _files[fileMessage.Name].LastProcessedPart = fileMessage.PartNum;
-                await _files[fileMessage.Name].FileStream.WriteAsync(fileMessage.Data);
+            await SafeWriteAsync(_files[fileMessage.Name], fileMessage.Data);
+        }
 
-                _files[fileMessage.Name].SemaphoreSlim.Release();
-            }
+        private static async Task SafeWriteAsync(ResultFile file, byte[] data)
+        {
+            file.SemaphoreSlim.Wait();
+            await file.FileStream.WriteAsync(data);
+            file.SemaphoreSlim.Release();
         }
 
         private class ResultFile
         {
-            public long LastProcessedPart { get; set; }
 
             public FileStream FileStream { get; set; }
 
