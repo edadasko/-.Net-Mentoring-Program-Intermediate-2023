@@ -41,11 +41,6 @@ namespace Messaging.ProcessingService
 
         private async Task WriteMessageAsync(FileMessage fileMessage)
         {
-            if (fileMessage.PartNum != 1 && !_files.ContainsKey(fileMessage.Name))
-            {
-                SpinWait.SpinUntil(() => _files.ContainsKey(fileMessage.Name));
-            }
-
             if (fileMessage.PartNum == 1)
             {
                 var processedFileName = $"{Guid.NewGuid()}.{Path.GetExtension(fileMessage.Name)}";
@@ -53,15 +48,21 @@ namespace Messaging.ProcessingService
                 {
                     LastProcessedPart = fileMessage.PartNum,
                     FileStream = File.Create(Path.Combine(_saveFolder, processedFileName)),
+                    SemaphoreSlim = new SemaphoreSlim(1),
                 };
 
+                _files[fileMessage.Name].SemaphoreSlim.Wait();
                 await _files[fileMessage.Name].FileStream.WriteAsync(fileMessage.Data);
+                _files[fileMessage.Name].SemaphoreSlim.Release();
             }
             else
             {
-                SpinWait.SpinUntil(() => _files[fileMessage.Name].LastProcessedPart == fileMessage.PartNum - 1);
+                _files[fileMessage.Name].SemaphoreSlim.Wait();
+
                 _files[fileMessage.Name].LastProcessedPart = fileMessage.PartNum;
                 await _files[fileMessage.Name].FileStream.WriteAsync(fileMessage.Data);
+
+                _files[fileMessage.Name].SemaphoreSlim.Release();
             }
         }
 
@@ -70,6 +71,8 @@ namespace Messaging.ProcessingService
             public long LastProcessedPart { get; set; }
 
             public FileStream FileStream { get; set; }
+
+            public SemaphoreSlim SemaphoreSlim { get; set; }
         }
     }
 }
