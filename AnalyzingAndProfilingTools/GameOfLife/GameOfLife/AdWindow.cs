@@ -45,7 +45,8 @@ namespace GameOfLife
         
         protected override void OnClosed(EventArgs e)
         {
-            //Unsubscribe();
+            adTimer.Stop();
+            Unsubscribe();
             base.OnClosed(e);
         } 
 

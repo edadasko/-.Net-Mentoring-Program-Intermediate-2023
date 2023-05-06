@@ -9,7 +9,7 @@ namespace GameOfLife
         private Grid mainGrid;
         DispatcherTimer timer;   //  Generation timer
         private int genCounter;
-        private AdWindow[] adWindow;
+        private AdWindow[] adWindows;
 
 
         public MainWindow()
@@ -25,34 +25,26 @@ namespace GameOfLife
 
         private void StartAd()
         {
-            
+            const int adsCount = 2;
+            if (adWindows == null)
             {
-                adWindow = new AdWindow[2];
-                for (int i = 0; i < 2; i++)
+                adWindows = new AdWindow[adsCount];
+            }
+            else
+            {
+                foreach (var ad in adWindows)
                 {
-                    if (adWindow[i] == null)
-                    {
-                        adWindow[i] = new AdWindow(this);
-                        adWindow[i].Closed += AdWindowOnClosed;
-                        adWindow[i].Top = this.Top + (330 * i) + 70;
-                        adWindow[i].Left = this.Left + 240;                        
-                        adWindow[i].Show();
-                    }
+                    ad.Close();
                 }
-                
-                
             }
-        }
 
-        private void AdWindowOnClosed(object sender, EventArgs eventArgs)
-        {
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < adsCount; i++)
             {
-                adWindow[i].Closed -= AdWindowOnClosed;
-                adWindow[i] = null;
+                adWindows[i] = new AdWindow(this);
+                adWindows[i].Top = this.Top + (330 * i) + 70;
+                adWindows[i].Left = this.Left + 240;
+                adWindows[i].Show();
             }
-            
-            
         }
 
 
@@ -82,7 +74,5 @@ namespace GameOfLife
         {
             mainGrid.Clear();
         }
-
-        
     }
 }

@@ -18,17 +18,17 @@ namespace GameOfLife
         private Canvas drawCanvas;
         private Ellipse[,] cellsVisuals;
 
-        
+
         public Grid(Canvas c)
         {
             drawCanvas = c;
             rnd = new Random();
-            SizeX = (int) (c.Width / 5);
+            SizeX = (int)(c.Width / 5);
             SizeY = (int)(c.Height / 5);
             cells = new Cell[SizeX, SizeY];
             nextGenerationCells = new Cell[SizeX, SizeY];
             cellsVisuals = new Ellipse[SizeX, SizeY];
- 
+
             for (int i = 0; i < SizeX; i++)
                 for (int j = 0; j < SizeY; j++)
                 {
@@ -39,7 +39,6 @@ namespace GameOfLife
             SetRandomPattern();
             InitCellsVisuals();
             UpdateGraphics();
-            
         }
 
 
@@ -57,14 +56,13 @@ namespace GameOfLife
 
         void MouseMove(object sender, MouseEventArgs e)
         {
-            var cellVisual = sender as Ellipse;
-            
-            int i = (int) cellVisual.Margin.Left / 5;
-            int j = (int) cellVisual.Margin.Top / 5;
-            
-
             if (e.LeftButton == MouseButtonState.Pressed)
             {
+                var cellVisual = sender as Ellipse;
+
+                int i = (int)cellVisual.Margin.Left / 5;
+                int j = (int)cellVisual.Margin.Top / 5;
+
                 if (!cells[i, j].IsAlive)
                 {
                     cells[i, j].IsAlive = true;
@@ -78,9 +76,14 @@ namespace GameOfLife
         {
             for (int i = 0; i < SizeX; i++)
                 for (int j = 0; j < SizeY; j++)
-                    cellsVisuals[i, j].Fill = cells[i, j].IsAlive
-                                                  ? (cells[i, j].Age < 2 ? Brushes.White : Brushes.DarkGray)
-                                                  : Brushes.Gray;
+                    UpdateCellGraphic(i, j);
+        }
+
+        public void UpdateCellGraphic(int row, int column)
+        {
+            cellsVisuals[row, column].Fill = cells[row, column].IsAlive
+                ? (cells[row, column].Age < 2 ? Brushes.White : Brushes.DarkGray)
+                : Brushes.Gray;
         }
 
         public void InitCellsVisuals()
@@ -98,11 +101,10 @@ namespace GameOfLife
 
                     cellsVisuals[i, j].MouseMove += MouseMove;
                     cellsVisuals[i, j].MouseLeftButtonDown += MouseMove;
-                 }
+                }
             UpdateGraphics();
-                    
         }
-        
+
 
         public static bool GetRandomBoolean()
         {
@@ -115,7 +117,7 @@ namespace GameOfLife
                 for (int j = 0; j < SizeY; j++)
                     cells[i, j].IsAlive = GetRandomBoolean();
         }
-        
+
         public void UpdateToNextGeneration()
         {
             for (int i = 0; i < SizeX; i++)
@@ -123,25 +125,18 @@ namespace GameOfLife
                 {
                     cells[i, j].IsAlive = nextGenerationCells[i, j].IsAlive;
                     cells[i, j].Age = nextGenerationCells[i, j].Age;
+                    UpdateCellGraphic(i, j);
                 }
-
-            UpdateGraphics();
         }
-        
+
 
         public void Update()
         {
-            bool alive = false;
-            int age = 0;
-
             for (int i = 0; i < SizeX; i++)
             {
                 for (int j = 0; j < SizeY; j++)
                 {
-//                    nextGenerationCells[i, j] = CalculateNextGeneration(i,j);          // UNOPTIMIZED
-                    CalculateNextGeneration(i, j, ref alive, ref age);   // OPTIMIZED
-                    nextGenerationCells[i, j].IsAlive = alive;  // OPTIMIZED
-                    nextGenerationCells[i, j].Age = age;  // OPTIMIZED
+                    UpdateNextGeneration(i, j);
                 }
             }
             UpdateToNextGeneration();
@@ -158,7 +153,7 @@ namespace GameOfLife
 
             if (alive && count < 2)
                 return new Cell(row, column, 0, false);
-            
+
             if (alive && (count == 2 || count == 3))
             {
                 cells[row, column].Age++;
@@ -167,43 +162,35 @@ namespace GameOfLife
 
             if (alive && count > 3)
                 return new Cell(row, column, 0, false);
-            
+
             if (!alive && count == 3)
                 return new Cell(row, column, 0, true);
-            
+
             return new Cell(row, column, 0, false);
         }
 
-        public void CalculateNextGeneration(int row, int column, ref bool isAlive, ref int age)     // OPTIMIZED
+        public void UpdateNextGeneration(int row, int column)
         {
-            isAlive = cells[row, column].IsAlive;
-            age = cells[row, column].Age;
-
             int count = CountNeighbors(row, column);
 
-            if (isAlive && count < 2)
+            if (cells[row, column].IsAlive)
             {
-                isAlive = false;
-                age = 0;
+                if (count < 2 || count > 3)
+                {
+                    nextGenerationCells[row, column].IsAlive = false;
+                    nextGenerationCells[row, column].Age = 0;
+                }
+                else if (count == 2 || count == 3)
+                {
+                    cells[row, column].Age++;
+                    nextGenerationCells[row, column].IsAlive = true;
+                    nextGenerationCells[row, column].Age = cells[row, column].Age;
+                }
             }
-
-            if (isAlive && (count == 2 || count == 3))
+            else if (count == 3)
             {
-                cells[row, column].Age++;
-                isAlive = true;
-                age = cells[row, column].Age;
-            }
-
-            if (isAlive && count > 3)
-            {
-                isAlive = false;
-                age = 0;
-            }
-
-            if (!isAlive && count == 3)
-            {
-                isAlive = true;
-                age = 0;
+                nextGenerationCells[row, column].IsAlive = true;
+                nextGenerationCells[row, column].Age = 0;
             }
         }
 
