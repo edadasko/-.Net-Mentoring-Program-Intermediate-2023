@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using ProfileSample.DAL;
 using ProfileSample.Models;
@@ -15,22 +13,14 @@ namespace ProfileSample.Controllers
         {
             var context = new ProfileSampleEntities();
 
-            var sources = context.ImgSources.Take(20).Select(x => x.Id);
-            
-            var model = new List<ImageModel>();
-
-            foreach (var id in sources)
-            {
-                var item = context.ImgSources.Find(id);
-
-                var obj = new ImageModel()
+            var model = context.ImgSources
+                .Take(20)
+                .Select(image => new ImageModel
                 {
-                    Name = item.Name,
-                    Data = item.Data
-                };
-
-                model.Add(obj);
-            } 
+                    Name = image.Name,
+                    Data = image.Data
+                })
+                .ToList();
 
             return View(model);
         }
@@ -41,24 +31,24 @@ namespace ProfileSample.Controllers
 
             using (var context = new ProfileSampleEntities())
             {
-                foreach (var file in files)
+                List<ImgSource> imagesToAdd = files.Select(file =>
                 {
                     using (var stream = new FileStream(file, FileMode.Open))
                     {
                         byte[] buff = new byte[stream.Length];
 
-                        stream.Read(buff, 0, (int) stream.Length);
+                        stream.Read(buff, 0, (int)stream.Length);
 
-                        var entity = new ImgSource()
+                        return new ImgSource()
                         {
                             Name = Path.GetFileName(file),
                             Data = buff,
                         };
-
-                        context.ImgSources.Add(entity);
-                        context.SaveChanges();
                     }
-                } 
+                }).ToList();
+
+                context.ImgSources.AddRange(imagesToAdd);
+                context.SaveChanges();
             }
 
             return RedirectToAction("Index");
