@@ -2,8 +2,10 @@
 {
     using System;
     using System.CodeDom.Compiler;
+    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Diagnostics;
+    using System.Linq;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Markup;
@@ -11,6 +13,15 @@
     public class MainWindow : Window, IComponentConnector
     {
         private bool _contentLoaded;
+
+        private readonly Dictionary<string, Func<double, double, double>> _operations = new Dictionary<string, Func<double, double, double>>()
+        {
+            { "+", (x, y) => x + y },
+            { "-", (x, y) => x - y },
+            { "*", (x, y) => x * y },
+            { "/", (x, y) => x / y },
+        };
+
         internal TextBox tb;
 
         public MainWindow()
@@ -57,45 +68,33 @@
         private void result()
         {
             TextBox tb;
-            int startIndex = 0;
-            if (this.tb.Text.Contains("+"))
+
+            var operationKey = _operations.Keys.FirstOrDefault(key => this.tb.Text.Contains(key));
+
+            if (operationKey == null)
             {
-                startIndex = this.tb.Text.IndexOf("+");
+                DisplayFormatError();
+                return;
             }
-            else if (this.tb.Text.Contains("-"))
-            {
-                startIndex = this.tb.Text.IndexOf("-");
-            }
-            else if (this.tb.Text.Contains("*"))
-            {
-                startIndex = this.tb.Text.IndexOf("*");
-            }
-            else if (this.tb.Text.Contains("/"))
-            {
-                startIndex = this.tb.Text.IndexOf("/");
-            }
-            string str = this.tb.Text.Substring(startIndex, 1);
-            double num2 = Convert.ToDouble(this.tb.Text.Substring(0, startIndex));
-            double num3 = Convert.ToDouble(this.tb.Text.Substring(startIndex + 1, (this.tb.Text.Length - startIndex) - 1));
-            if (str == "+")
+
+            int operationIndex = this.tb.Text.IndexOf(operationKey);
+            Func<double, double, double>  operation = _operations[operationKey];
+
+            if (double.TryParse(this.tb.Text.Substring(0, operationIndex), out double num1) &&
+                double.TryParse(this.tb.Text.Substring(operationIndex + 1), out double num2))
             {
                 tb = this.tb;
-                tb.Text = tb.Text + "=" + (num2 + num3);
-            }
-            else if (str == "-")
-            {
-                tb = this.tb;
-                tb.Text = tb.Text + "=" + (num2 - num3);
-            }
-            else if (str == "*")
-            {
-                tb = this.tb;
-                tb.Text = tb.Text + "=" + (num2 * num3);
+                tb.Text = tb.Text + "=" + operation(num1, num2);
             }
             else
             {
+                DisplayFormatError();
+            }
+
+            void DisplayFormatError()
+            {
                 tb = this.tb;
-                tb.Text = tb.Text + "=" + (num2 / num3);
+                tb.Text = "FORMAT ERROR";
             }
         }
 
