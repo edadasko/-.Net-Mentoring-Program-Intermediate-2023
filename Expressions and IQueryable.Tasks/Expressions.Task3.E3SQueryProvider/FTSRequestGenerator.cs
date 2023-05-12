@@ -23,28 +23,19 @@ namespace Expressions.Task3.E3SQueryProvider
 
         #region public methods
 
-        public Uri GenerateRequestUrl<T>(string query = "*", int start = 0, int limit = 10)
+        public Uri GenerateRequestUrl<T>(FtsQueryRequest query, int start = 0, int limit = 10)
         {
             return GenerateRequestUrl(typeof(T), query, start, limit);
         }
 
-        public Uri GenerateRequestUrl(Type type, string query = "*", int start = 0, int limit = 10)
+        public Uri GenerateRequestUrl(Type type, FtsQueryRequest query, int start = 0, int limit = 10)
         {
             string metaTypeName = GetMetaTypeName(type);
 
-            var ftsQueryRequest = new FtsQueryRequest
-            {
-                Statements = new List<Statement>
-                {
-                    new Statement {
-                        Query = query
-                    }
-                },
-                Start = start,
-                Limit = limit
-            };
+            query.Start = start;
+            query.Limit = limit;
 
-            var ftsQueryRequestString = JsonConvert.SerializeObject(ftsQueryRequest);
+            var ftsQueryRequestString = JsonConvert.SerializeObject(query);
 
             var uri = BindByName($"{_baseAddress}{_FTSSearchTemplate}",
                 new Dictionary<string, string>()

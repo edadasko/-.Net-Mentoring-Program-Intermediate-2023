@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using Expressions.Task3.E3SQueryProvider.Helpers;
 using Expressions.Task3.E3SQueryProvider.Models.Entities;
+using Expressions.Task3.E3SQueryProvider.Models.Request;
 using Expressions.Task3.E3SQueryProvider.QueryProvider;
 using Expressions.Task3.E3SQueryProvider.Services;
 using Microsoft.Extensions.Configuration;
@@ -47,7 +48,10 @@ namespace Expressions.Task3.E3SQueryProvider.Test.Ignored
         [Fact(Skip = "This test is provided to show the general idea of usage.")]
         public void WithoutProvider()
         {
-            IEnumerable<EmployeeEntity> res = searchService.Value.SearchFts<EmployeeEntity>("workstation:(EPRUIZHW0249)", 0, 1);
+            IEnumerable<EmployeeEntity> res = searchService.Value.SearchFts<EmployeeEntity>(new FtsQueryRequest()
+            {
+                Statements = new List<Statement>() { new Statement() { Query = "workstation:(EPRUIZHW0249)" } }
+            }, 0, 1);
 
             foreach (var emp in res)
             {
@@ -58,7 +62,10 @@ namespace Expressions.Task3.E3SQueryProvider.Test.Ignored
         [Fact(Skip = "This test is provided to show the general idea of usage.")]
         public void WithoutProviderNonGeneric()
         {
-            var res = searchService.Value.SearchFts(typeof(EmployeeEntity), "workstation:(EPRUIZHW0249)", 0, 10);
+            var res = searchService.Value.SearchFts(typeof(EmployeeEntity), new FtsQueryRequest()
+            {
+                Statements = new List<Statement>() { new Statement() { Query = "workstation:(EPRUIZHW0249)" } }
+            }, 0, 10);
 
             foreach (var emp in res.OfType<EmployeeEntity>())
             {

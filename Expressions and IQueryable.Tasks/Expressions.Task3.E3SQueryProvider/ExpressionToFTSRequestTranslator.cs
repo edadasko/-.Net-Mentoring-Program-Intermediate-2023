@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Expressions.Task3.E3SQueryProvider.Models.Request;
+using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -7,18 +8,20 @@ namespace Expressions.Task3.E3SQueryProvider
 {
     public class ExpressionToFtsRequestTranslator : ExpressionVisitor
     {
-        readonly StringBuilder _resultStringBuilder;
+        readonly FtsQueryRequest _resultRequest;
+        readonly StringBuilder _nextStatementStringBuilder;
 
         public ExpressionToFtsRequestTranslator()
         {
-            _resultStringBuilder = new StringBuilder();
+            _resultRequest = new FtsQueryRequest();
+            _nextStatementStringBuilder = new StringBuilder();
         }
 
-        public string Translate(Expression exp)
+        public FtsQueryRequest Translate(Expression exp)
         {
             Visit(exp);
 
-            return _resultStringBuilder.ToString();
+            return _resultRequest;
         }
 
         #region protected methods
@@ -28,8 +31,8 @@ namespace Expressions.Task3.E3SQueryProvider
             if (node.Method.DeclaringType == typeof(Queryable)
                 && node.Method.Name == "Where")
             {
-                var predicate = node.Arguments[1];
-                Visit(predicate);
+                Visit(node.Arguments[0]);
+                Visit(node.Arguments[1]);
 
                 return node;
             }
@@ -37,9 +40,10 @@ namespace Expressions.Task3.E3SQueryProvider
             if (node.Method.DeclaringType == typeof(string))
             {
                 Visit(node.Object);
-                _resultStringBuilder.Append(GetOpenSymbols(node.Method.Name));
+                _nextStatementStringBuilder.Append(GetOpenSymbols(node.Method.Name));
                 Visit(node.Arguments[0]);
-                _resultStringBuilder.Append(GetCloseSymbols(node.Method.Name));
+                _nextStatementStringBuilder.Append(GetCloseSymbols(node.Method.Name));
+                AddNextStatement();
 
                 return node;
 
@@ -100,9 +104,15 @@ namespace Expressions.Task3.E3SQueryProvider
                     }
 
                     Visit(directOrder ? node.Left : node.Right);
-                    _resultStringBuilder.Append("(");
+                    _nextStatementStringBuilder.Append("(");
                     Visit(directOrder ? node.Right : node.Left);
-                    _resultStringBuilder.Append(")");
+                    _nextStatementStringBuilder.Append(")");
+                    AddNextStatement();
+                    break;
+
+                case ExpressionType.AndAlso:
+                    Visit(node.Left);
+                    Visit(node.Right);
                     break;
 
                 default:
@@ -114,18 +124,24 @@ namespace Expressions.Task3.E3SQueryProvider
 
         protected override Expression VisitMember(MemberExpression node)
         {
-            _resultStringBuilder.Append(node.Member.Name).Append(":");
+            _nextStatementStringBuilder.Append(node.Member.Name).Append(":");
 
             return base.VisitMember(node);
         }
 
         protected override Expression VisitConstant(ConstantExpression node)
         {
-            _resultStringBuilder.Append(node.Value);
+            _nextStatementStringBuilder.Append(node.Value);
 
             return node;
         }
 
         #endregion
+
+        private void AddNextStatement()
+        {
+            _resultRequest.Statements.Add(new Statement() { Query = _nextStatementStringBuilder.ToString() });
+            _nextStatementStringBuilder.Clear();
+        }
     }
 }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using Expressions.Task3.E3SQueryProvider.Models.Entities;
+using Expressions.Task3.E3SQueryProvider.Models.Request;
 
 namespace Expressions.Task3.E3SQueryProvider.Services
 {
@@ -26,7 +27,7 @@ namespace Expressions.Task3.E3SQueryProvider.Services
 
         #region public methods
 
-        public IEnumerable<T> SearchFts<T>(string query, int start = 0, int limit = 0) where T : BaseE3SEntity
+        public IEnumerable<T> SearchFts<T>(FtsQueryRequest query, int start = 0, int limit = 0) where T : BaseE3SEntity
         {
             var requestGenerator = new FtsRequestGenerator(_baseAddress);
 
@@ -37,7 +38,7 @@ namespace Expressions.Task3.E3SQueryProvider.Services
             return JsonConvert.DeserializeObject<FtsResponse<T>>(resultString).Items.Select(t => t.Data);
         }
         
-        public IEnumerable SearchFts(Type type, string query, int start = 0, int limit = 0)
+        public IEnumerable SearchFts(Type type, FtsQueryRequest query, int start = 0, int limit = 0)
         {
             Type finalType = typeof(FtsResponse<>).MakeGenericType(type);
             if (finalType == null)

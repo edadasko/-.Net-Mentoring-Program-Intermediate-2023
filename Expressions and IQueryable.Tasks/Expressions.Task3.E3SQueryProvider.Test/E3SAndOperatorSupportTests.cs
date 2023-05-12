@@ -11,6 +11,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using Expressions.Task3.E3SQueryProvider.Models.Entities;
+using Expressions.Task3.E3SQueryProvider.Models.Request;
 using Xunit;
 
 namespace Expressions.Task3.E3SQueryProvider.Test
@@ -20,7 +21,7 @@ namespace Expressions.Task3.E3SQueryProvider.Test
         #region SubTask 3: AND operator support
 
         [Fact]
-        public void TestAndQueryable()
+        public void TestOneAndQueryable()
         {
             var translator = new ExpressionToFtsRequestTranslator();
             Expression<Func<IQueryable<EmployeeEntity>, IQueryable<EmployeeEntity>>> expression
@@ -34,8 +35,29 @@ namespace Expressions.Task3.E3SQueryProvider.Test
               ],
              */
 
-            // todo: create asserts for this test by yourself, because they will depend on your final implementation
-            throw new NotImplementedException("Please implement this test and the appropriate functionality");
+            FtsQueryRequest translated = translator.Translate(expression);
+
+            Assert.Equal(2, translated.Statements.Count);
+            Assert.Equal("Workstation:(EPRUIZHW006)", translated.Statements[0].Query);
+            Assert.Equal("Manager:(John*)", translated.Statements[1].Query);
+        }
+
+        [Fact]
+        public void TestTwoAndsQueryable()
+        {
+            var translator = new ExpressionToFtsRequestTranslator();
+            Expression<Func<IQueryable<EmployeeEntity>, IQueryable<EmployeeEntity>>> expression
+                = query => query.Where(
+                    e => e.Workstation == "EPRUIZHW006"
+                    && e.Manager.StartsWith("John")
+                    && e.Unit.Equals("123"));
+
+            FtsQueryRequest translated = translator.Translate(expression);
+
+            Assert.Equal(3, translated.Statements.Count);
+            Assert.Equal("Workstation:(EPRUIZHW006)", translated.Statements[0].Query);
+            Assert.Equal("Manager:(John*)", translated.Statements[1].Query);
+            Assert.Equal("Unit:(123)", translated.Statements[2].Query);
         }
 
         #endregion
