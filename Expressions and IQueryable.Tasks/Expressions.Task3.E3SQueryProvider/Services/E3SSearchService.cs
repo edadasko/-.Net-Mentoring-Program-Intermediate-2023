@@ -27,6 +27,12 @@ namespace Expressions.Task3.E3SQueryProvider.Services
 
         #region public methods
 
+        public IEnumerable<T> SearchFts<T>(string query, int start = 0, int limit = 0) where T : BaseE3SEntity =>
+            SearchFts<T>(CreateRequestFromQueryString(query), start, limit);
+
+        public IEnumerable SearchFts(Type type, string query, int start = 0, int limit = 0) =>
+            SearchFts(type, CreateRequestFromQueryString(query), start, limit);
+
         public IEnumerable<T> SearchFts<T>(FtsQueryRequest query, int start = 0, int limit = 0) where T : BaseE3SEntity
         {
             var requestGenerator = new FtsRequestGenerator(_baseAddress);
@@ -73,6 +79,9 @@ namespace Expressions.Task3.E3SQueryProvider.Services
 
             return list;
         }
+
+        private FtsQueryRequest CreateRequestFromQueryString(string query) =>
+            new FtsQueryRequest() { Statements = new List<Statement>() { new Statement() { Query = query } } };
 
         #endregion
     }
