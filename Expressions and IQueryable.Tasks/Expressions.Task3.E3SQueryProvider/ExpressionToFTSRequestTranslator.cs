@@ -33,6 +33,47 @@ namespace Expressions.Task3.E3SQueryProvider
 
                 return node;
             }
+
+            if (node.Method.DeclaringType == typeof(string))
+            {
+                Visit(node.Object);
+                _resultStringBuilder.Append(GetOpenSymbols(node.Method.Name));
+                Visit(node.Arguments[0]);
+                _resultStringBuilder.Append(GetCloseSymbols(node.Method.Name));
+
+                return node;
+
+                string GetOpenSymbols(string methodName)
+                {
+                    switch (methodName)
+                    {
+                        case "Equals":
+                        case "StartsWith":
+                            return "(";
+                        case "EndsWith":
+                        case "Contains":
+                            return "(*";
+                        default:
+                            throw new NotSupportedException($"Not supported string method: {methodName}");
+                    }
+                }
+
+                string GetCloseSymbols(string methodName)
+                {
+                    switch (methodName)
+                    {
+                        case "Equals":
+                        case "EndsWith":
+                            return ")";
+                        case "StartsWith":
+                        case "Contains":
+                            return "*)";
+                        default:
+                            throw new NotSupportedException($"Not supported string method: {methodName}");
+                    }
+                }
+            }
+
             return base.VisitMethodCall(node);
         }
 
