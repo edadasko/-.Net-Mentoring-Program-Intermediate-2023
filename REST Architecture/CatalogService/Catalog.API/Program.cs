@@ -1,3 +1,7 @@
+using Catalog.API.Filters;
+using Catalog.Data;
+using Catalog.Data.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Catalog.API
 {
@@ -7,16 +11,21 @@ namespace Catalog.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddTransient<IItemRepository, ItemRepository>();
 
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddControllers(options =>
+            {
+                options.Filters.Add<ExceptionFilter>();
+            });
+
+            builder.Services.AddDbContext<CatalogContext>(opt => opt.UseInMemoryDatabase("Catalog"));
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -24,9 +33,6 @@ namespace Catalog.API
             }
 
             app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
 
             app.MapControllers();
 
