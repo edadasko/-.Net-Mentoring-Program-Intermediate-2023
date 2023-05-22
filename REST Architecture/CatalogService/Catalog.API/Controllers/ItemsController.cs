@@ -19,7 +19,7 @@ namespace Catalog.API.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IList<Category>>> Get(
+        public async Task<IActionResult> Get(
             [FromQuery] int categoryId,
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 10)
@@ -32,7 +32,7 @@ namespace Catalog.API.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IList<Category>>> GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
             var item = await _itemRepository.GetItemAsync(id);
 
@@ -43,7 +43,7 @@ namespace Catalog.API.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<Category>> Create([FromBody] Item item)
+        public async Task<IActionResult> Create([FromBody] Item item)
         {
             var createdItem = await _itemRepository.AddItemAsync(item);
             return CreatedAtAction(nameof(GetById), new { id = createdItem.Id }, createdItem);
@@ -52,7 +52,7 @@ namespace Catalog.API.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Category>> Update(int id, [FromBody] Item item)
+        public async Task<IActionResult> Update(int id, [FromBody] Item item)
         {
             var updatedCategory = await _itemRepository.UpdateItemAsync(id, item);
             return Ok(updatedCategory);

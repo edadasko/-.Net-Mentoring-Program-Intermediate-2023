@@ -19,7 +19,7 @@ namespace Catalog.API.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IList<Category>>> GetAll()
+        public async Task<IActionResult> GetAll()
         {
             var categories = await _categoryRepository.GetCategoriesAsync();
             return Ok(categories);
@@ -27,9 +27,9 @@ namespace Catalog.API.Controllers
 
 
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Category))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IList<Category>>> GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
             var category = await _categoryRepository.GetCategoryAsync(id);
 
@@ -39,17 +39,17 @@ namespace Catalog.API.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<Category>> Create([FromBody] Category category)
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Category))]
+        public async Task<IActionResult> Create([FromBody] Category category)
         {
             var createdCategory = await _categoryRepository.AddCategoryAsync(category);
             return CreatedAtAction(nameof(GetById), new { id = createdCategory.Id }, createdCategory);
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Category))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Category>> Update(int id, [FromBody] Category category)
+        public async Task<IActionResult> Update(int id, [FromBody] Category category)
         {
             var updatedCategory = await _categoryRepository.UpdateCategoryAsync(id, category);
             return Ok(updatedCategory);
