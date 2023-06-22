@@ -1,20 +1,33 @@
-﻿namespace GOF.Composite;
+﻿using System.Text;
 
-public class Form
+namespace GOF.Composite;
+
+public class Form : IXmlElement
 {
+    private readonly string _name;
+    private readonly List<IXmlElement> _xmlElements;
+
     public Form(string name)
     {
-        throw new NotImplementedException();
+        _name = name;
+        _xmlElements = new List<IXmlElement>();
     }
 
-    public void AddComponent()
+    public void AddComponent(IXmlElement xmlElement)
     {
-        throw new NotImplementedException();
+        _xmlElements.Add(xmlElement);
     }
 
     public string ConvertToString()
     {
-        throw new NotImplementedException();
+        StringBuilder stringBuilder = new();
+        stringBuilder.Append(@$"<form name='{_name}'>");
+        foreach (var xmlElement in _xmlElements)
+        {
+            stringBuilder.Append(xmlElement.ConvertToString());
+        }
+        stringBuilder.Append(@$"</form>");
+        return stringBuilder.ToString();
     }
 }
 
